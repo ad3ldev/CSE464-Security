@@ -1,4 +1,5 @@
 import sys
+import itertools
 from BitVector import *                                                       #(A)
 
 if len(sys.argv) is not 3:                                                    #(B)
@@ -18,27 +19,30 @@ for i in range(0,len(PassPhrase) // numbytes):                                #(
     bv_iv ^= BitVector( textstring = textstr )                                #(I)
 
 # Reduce the key to a bit array of size BLOCKSIZE:
-key_bv = BitVector(bitstring = "0110111101101011")                                   #(N)
-print(key_bv)
-# Create a bitvector for storing the ciphertext bit array:
-msg_encrypted_bv = BitVector( size = 0 )                                      #(R)
+keys = []                            #(P)
+for x in map(''.join, itertools.product('01', repeat=BLOCKSIZE)):
+    keys.append(BitVector(bitstring = x))              
+    
 
-# Carry out differential XORing of bit blocks and encryption:
-previous_block = bv_iv                                                        #(S)
-bv = BitVector( filename = sys.argv[1] )                                      #(T)
-while (bv.more_to_read):                                                      #(U)
-    bv_read = bv.read_bits_from_file(BLOCKSIZE)                               #(V)
-    if len(bv_read) < BLOCKSIZE:                                              #(W)
-        bv_read += BitVector(size = (BLOCKSIZE - len(bv_read)))               #(X)
-    bv_read ^= key_bv                                                         #(Y)
-    bv_read ^= previous_block                                                 #(Z)
-    previous_block = bv_read.deep_copy()                                      #(a)
-    msg_encrypted_bv += bv_read                                               #(b)
+count = 0
+for key_bv in keys:                                                         #(Q)
+    msg_encrypted_bv = BitVector( size = 0 )                                      #(R)
+    previous_block = bv_iv                                                        #(S)
+    bv = BitVector( filename = sys.argv[1] )                                      #(T)
+    while (bv.more_to_read):                                                      #(U)
+        bv_read = bv.read_bits_from_file(BLOCKSIZE)                               #(V)
+        if len(bv_read) < BLOCKSIZE:                                              #(W)
+            bv_read += BitVector(size = (BLOCKSIZE - len(bv_read)))               #(X)
+        bv_read ^= key_bv                                                         #(Y)
+        bv_read ^= previous_block                                                 #(Z)
+        previous_block = bv_read.deep_copy()                                      #(a)
+        msg_encrypted_bv += bv_read                                               #(b)
 
-# Convert the encrypted bitvector into a hex string:    
-outputhex = msg_encrypted_bv.get_hex_string_from_bitvector()                  #(c)
+    # Convert the encrypted bitvector into a hex string:    
+    outputhex = msg_encrypted_bv.get_hex_string_from_bitvector()                  #(c)
 
-# Write ciphertext bitvector to the output file:
-FILEOUT = open(sys.argv[2], 'w')                                              #(d)
-FILEOUT.write(outputhex)                                                      #(e)
-FILEOUT.close()                                                               #(f)
+    if (outputhex.find("20352a7e36703a6930767f7276397e376528632d6b6665656f6f6424623c2d30272f3c2d3d2172396933742c7e233f687d2e32083c11385a03460d440c25") != -1):
+        FILEOUT = open(f'{count}-{sys.argv[2]}', 'w')                                              #(d)
+        FILEOUT.write(outputhex)                                                      #(e)
+        FILEOUT.close()  
+    count += 1
