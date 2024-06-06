@@ -1,0 +1,33 @@
+##  This is an emailer file for demonstring a Python based spam-spewing bot in Lecture 29 of
+##  the Lecture Notes on Computer and Network Security by Avi Kak
+
+import subprocess
+
+SENDMAIL = subprocess.Popen(['/usr/sbin/sendmail -t -oi'], stdin=subprocess.PIPE, shell=True)
+
+SENDMAIL.communicate("From: cutiepie@yourfriend.com\n" + 
+                     "To: avi_kak@yahoo.com \n" + 
+                     "Subject: I am so lonely, please call \n\n" + 
+                     "\n\nYou may not believe this, but I know you already." + 
+                     "I promise you will not regret it if you call me at 123-456-789.\n" + 
+                     "\n\nIf you call, I will send you my photo that you will drool over. Call soon.\n" + "\n\n")
+
+SENDMAIL = subprocess.Popen(['/usr/sbin/sendmail -t -oi'], stdin=subprocess.PIPE, shell=True)
+
+SENDMAIL.communicate("From: goodbuddy@someoutfit.net\n" + 
+                     "To: kak@purdue.edu \n" + 
+                     "Subject: you just won a lottery \n\n" + 
+                     "\n\nYes, you have won loads of money.\n\n"+ 
+                     "\n\nYou can now have fun the rest of your life.\n\n" + 
+                     "\n\n Call immediately at 123-456-789 to claim your prize.\n\n" + "\n\n")
+
+SENDMAIL = subprocess.Popen(['/usr/sbin/sendmail -t -oi'], stdin=subprocess.PIPE, shell=True)
+
+SENDMAIL.communicate("From: hellokitty@anotheroutfit.org\n" + 
+                     "To: ack@purdue.edu \n" + 
+                     "Subject: Be a Romeo \n\n" + 
+                     "\n\nOur medication was extensively tested over 1000 males in Eastern Carbozia and," +  
+                     "according to all, it produced amazing results.\n\n" +  
+                     "\n\nNow you can please a woman like you have always wanted to. Call immediately " +
+                     "at 123-456-789 for a free-trial package.\n\n" + "\n\n")
+
